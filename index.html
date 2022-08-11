@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- Any ORDERCLOUD_ prefixed values are replaced by variables defined in server.js -->
+    <script>
+        const OrderCloudRoles = ['Shopper'];
+        if(!"ORDERCLOUD_CLIENT_ID") {
+            alert('Please define the environment variables in server.js')
+        }
+        
+        const queryString = window.location.search;
+        const queryParams = new URLSearchParams(queryString);
+        const orderCloudToken = queryParams.get('token');
+        const idpToken = queryParams.get('idpToken');
+        if(!orderCloudToken) {
+            const openidurl = "ORDERCLOUD_BASE_API_URL/ocrplogin?id=ORDERCLOUD_OPEN_ID_CONNECT_ID&cid=ORDERCLOUD_CLIENT_ID&roles=ORDERCLOUD_ROLES";
+
+            // kickstart openid connect flow
+            console.log(openidurl);
+            window.location.href = openidurl;
+        } else {
+            // Now that we have the ordercloud token we could use the Javascript SDKto store it and interact with the API as usual
+            alert(`Success! You're logged and your ordercloud token is:\n\n${orderCloudToken} \n\n and your IDP token is: \n\n ${idpToken}`);
+        }
+    </script>
+</body>
+</html>
