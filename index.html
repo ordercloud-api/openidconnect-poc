@@ -17,6 +17,7 @@
         const queryParams = new URLSearchParams(queryString);
         const orderCloudToken = queryParams.get('token');
         const idpToken = queryParams.get('idpToken');
+        const refreshToken = queryParams.get('refreshToken')
         if(!orderCloudToken) {
             const openidurl = "ORDERCLOUD_BASE_API_URL/ocrplogin?id=ORDERCLOUD_OPEN_ID_CONNECT_ID&cid=ORDERCLOUD_CLIENT_ID&roles=ORDERCLOUD_ROLES";
 
@@ -25,7 +26,7 @@
             window.location.href = openidurl;
         } else {
             // Now that we have the ordercloud token we could use the Javascript SDKto store it and interact with the API as usual
-            alert(`Success! You're logged and your ordercloud token is:\n\n${orderCloudToken} \n\n and your IDP token is: \n\n ${idpToken}`);
+            alert(`Success! You're logged and your ordercloud token is:\n\n${orderCloudToken} \n\n and your IDP token is: \n\n ${idpToken} \n\n and your refresh token is: ${refreshToken}`);
         }
     </script>
 </body>
