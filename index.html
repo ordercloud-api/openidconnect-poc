@@ -8,7 +8,6 @@
 <body>
     <!-- Any ORDERCLOUD_ prefixed values are replaced by variables defined in server.js -->
     <script>
-        const OrderCloudRoles = ['Shopper'];
         if(!"ORDERCLOUD_CLIENT_ID") {
             alert('Please define the environment variables in server.js')
         }
@@ -19,7 +18,7 @@
         const idpToken = queryParams.get('idpToken');
         const refreshToken = queryParams.get('refreshToken')
         if(!orderCloudToken) {
-            const openidurl = "ORDERCLOUD_BASE_API_URL/ocrplogin?id=ORDERCLOUD_OPEN_ID_CONNECT_ID&cid=ORDERCLOUD_CLIENT_ID&roles=ORDERCLOUD_ROLES";
+            const openidurl = "ORDERCLOUD_BASE_API_URL/ocrplogin?id=ORDERCLOUD_OPEN_ID_CONNECT_ID&cid=ORDERCLOUD_CLIENT_ID";
 
             // kickstart openid connect flow
             console.log(openidurl);

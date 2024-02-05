@@ -85,9 +85,11 @@ app.post("/integration-events/syncuser", (req, res) => {
   // The ordercloud user associated with this IDP
   const existingUser = body.ExistingUser;
 
+  console.log('existingUser', existingUser)
+
   // The claims (user details) from parsing the idp's ID token
   const claims = parseJwt(body.TokenResponse.id_token);
-  console.log(claims);
+  console.log('claims', claims);
 
   const shouldSyncUser =
     (existingUser.Email !== claims.email &&
@@ -98,26 +100,33 @@ app.post("/integration-events/syncuser", (req, res) => {
       existingUser.LastName !== "NOT_AVAILABLE");
 
   if (!shouldSyncUser) {
+    console.log('Not syncing user as no changes detected')
+    console.log('Username: ', existingUser.Username)
     res
       .status(200)
       .send({ ErrorMessage: null, Username: existingUser.Username });
     return;
   }
 
-  OrderCloud.Users.Patch(BUYER_ID, existingUser.ID, {
+  console.log('Syncing user, changes detected')
+
+  OrderCloud.Users.Patch(existinguser.CompanyID, existingUser.ID, {
     Email: claims.Email || "NOT_AVAILABLE",
     FirstName: claims.given_name || "NOT_AVAILABLE",
     LastName: claims.family_name || "NOT_AVAILABLE",
   })
     .then((user) => {
+      console.log('Success! Updated user with username: ', user.Username)
       return res
         .status(200)
         .send({ ErrorMessage: null, Username: user.Username });
     })
     .catch((error) => {
+      console.log(`An error occurred while syncing the user`);
       const message = error.isOrderCloudError
         ? JSON.stringify(error.errors)
         : error.message;
+      console.log(message);
       return res.status(200).send({ ErrorMessage: message, Username: null });
     });
 });
@@ -136,8 +145,7 @@ app.use(stringReplace({
   ORDERCLOUD_CLIENT_ID,
   ORDERCLOUD_OPEN_ID_CONNECT_ID,
   ORDERCLOUD_BASE_API_URL,
-  ORDERCLOUD_BUYER_ID,
-  ORDERCLOUD_ROLES
+  ORDERCLOUD_BUYER_ID
 }))
 
 app.use("/", express.static(__dirname));
